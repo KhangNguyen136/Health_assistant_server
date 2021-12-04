@@ -1,6 +1,6 @@
 const db = require("../models");
 const Illness = db.illness;
-
+const public_func = require("../share/public_func");
 // Create and Save a new illness
 exports.create = (req, res) => {
     // Validate request
@@ -136,25 +136,47 @@ exports.findAllPublished = (req, res) => {
         });
 };
 
-exports.searchbyName = async (req, res) => {
-    var name = req.query.name;
-    // console.log(name);
-    // if (name != null) {
-    const data = await Illness.find({ "ten_benh": "Rối loạn tiền đình" });
-    var noidung = data[0].trieu_chung[0].noi_dung;
-    console.log(noidung)
-    // for (var id = 0; id < noidung.length; id++) {
-    //     console.log(noidung[id])
-    // }
-    res.status(200).json({ "data": data });
+exports.searchbyName = async(req, res) => {
+    try {
+        var name = req.query.name;
+        var limit = req.query.limit;
+        var page = req.query.page;
+        if (!page) {
+            page = 1
+        }
+        if (!name || !limit) {
+            res.status(400).json({ "message": "Name is null! Bad request." });
 
-    // } else {
-    //     res.status(400).send("Name is null! Bad request.");
-    // };
+        } else {
+            const data = await Illness.find({ "ten_benh": new RegExp('.*' + name + '.*') });
+
+            var paging = []
+            paging = public_func.getPage(page, data.length, limit)
+
+            var out;
+            await paging.then((values) => {
+                out = values;
+            });
+            for (var i = 0; i < out.length; i++) {
+                out[i]["search_key"] = name;
+                out[i]["limit"] = limit;
+            }
+            res.status(200).json({
+                "data": data,
+                "paging": out,
+                "message": "Successfull",
+            });
+
+        };
+    } catch (error) {
+        res.status(500).json({ "message": "Server Error" });
+        console.log(error);
+    }
+
 
 };
 
-exports.getIllByName = async (illName) => {
+exports.getIllByName = async(illName) => {
     const ill = await Illness.findOne({ "ten_benh": illName });
     // if (data.length == 0)
     //     return null;

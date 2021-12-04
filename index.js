@@ -9,6 +9,9 @@ const express = require('express')
 const PORT = process.env.PORT || 8080
 const dialogflowController = require("./app/controllers/dialogflowController");
 const illnessController = require("./app/controllers/illnessController");
+const auth = require("./app/middleware/auth");
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./app/swagger.json');
 
 var app = express();
 
@@ -34,11 +37,20 @@ db.mongoose
 
 app.post("/dialogflow", dialogflowController.getMsg);
 
-app.get("/", (req, res) => res.send('Health assistant server'));
+
 
 app.use('/api/illness', require('./app/routes/illnessRoutes'));
 
 
 // require("./app/routes/illnessRoutes")(app);
+
+// api documents
+var options = {
+    swaggerOptions: {
+        url: "/api-docs/swagger.json",
+    },
+}
+app.get("/api-docs/swagger.json", (req, res) => res.json(swaggerDocument));
+app.use('/api-docs', swaggerUi.serveFiles(null, options), swaggerUi.setup(null, options));
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`))
