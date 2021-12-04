@@ -1,28 +1,31 @@
-module.exports = app => {
-    const illness = require("../controllers/illnessController");
+const illness = require("../controllers/illnessController");
+let express = require('express');
+let router = express.Router();
 
-    var router = require("express").Router();
 
-    // Create a new Illness
-    router.post("/", illness.create);
 
-    // Retrieve all Illnesss
-    router.get("/", illness.findAll);
+// Create a new Illness
+router.post("/", illness.create);
 
-    // Retrieve all published Illnesss
-    router.get("/published", illness.findAllPublished);
+// Retrieve all Illnesss
+router.get("/", illness.findAll);
 
-    // Retrieve a single Illness with id
-    router.get("/:id", illness.findOne);
+// Retrieve all published Illnesss
+router.get("/published", illness.findAllPublished);
 
-    // Update a Illness with id
-    router.put("/:id", illness.update);
+// Retrieve a single Illness with id
+// router.get("/:id", illness.findOne);
 
-    // Delete a Illness with id
-    router.delete("/:id", illness.delete);
+// Update a Illness with id
+router.put("/:id", illness.update);
 
-    // Create a new Illness
-    router.delete("/", illness.deleteAll);
+// Delete a Illness with id
+router.delete("/:id", illness.delete);
 
-    app.use("/api/illnesss", router);
-};
+// Create a new Illness
+router.delete("/", illness.deleteAll);
+
+
+router.get("/search", illness.searchbyName);
+
+module.exports = router;
