@@ -5,7 +5,7 @@ exports.getPage = async(page, total_rows, records_per_page) => {
         if ((total_rows % records_per_page) > 0) {
             total_pages += 1;
         }
-        const range = 2;
+        const range = 3;
         var initial_num = page - range;
         var condition_limit_num = (parseInt(page) + parseInt(range) + 1);
         var page_count = 0;

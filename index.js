@@ -1,17 +1,12 @@
 const express = require('express')
 
-//set up for api document
-// const swaggerUi = require('swagger-ui-express');
-// const swaggerUi = require('swagger-jsdoc');
-// const swaggerDocument = require('./app/swagger.json');
-// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
 const PORT = process.env.PORT || 8080
 const dialogflowController = require("./app/controllers/dialogflowController");
 const illnessController = require("./app/controllers/illnessController");
 const auth = require("./app/middleware/auth");
 const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./app/swagger.json');
+const swaggerJsdoc = require("swagger-jsdoc");
+const { version } = require("../../package.json");
 
 var app = express();
 
@@ -42,15 +37,42 @@ app.post("/dialogflow", dialogflowController.getMsg);
 app.use('/api/illness', require('./app/routes/illnessRoutes'));
 
 
-// require("./app/routes/illnessRoutes")(app);
+
 
 // api documents
 var options = {
-    swaggerOptions: {
-        url: "/api-docs/swagger.json",
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "REST API Docs",
+            version,
+        },
+        components: {
+            securitySchemas: {
+                bearerAuth: {
+                    type: "http",
+                    scheme: "bearer",
+                    bearerFormat: "JWT",
+                },
+            },
+        },
+        security: [{
+            bearerAuth: [],
+        }, ],
     },
+    apis: ["./app/routes/*.js", "./app/models/*.js"],
 }
-app.get("/api-docs/swagger.json", (req, res) => res.json(swaggerDocument));
-app.use('/api-docs', swaggerUi.serveFiles(null, options), swaggerUi.setup(null, options));
+const swaggerSpec = swaggerJsdoc(options);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Docs in JSON format
+app.get("/docs.json", (req, res) => {
+    res.setHeader("Content-Type", "application/json");
+    res.send(swaggerSpec);
+});
+
+console.log(`Docs available at http://localhost:${PORT}/api-docs`);
+
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`))

@@ -1,6 +1,100 @@
-
-
 module.exports = mongoose => {
+
+    /**
+     * @openapi
+     * components:
+     *  schemas:
+     *    Illness:
+     *      type: object
+     *      properties:
+     *        ten_benh:
+     *          type: string
+     *        create_date:
+     *          type: string
+     *          format: date-time
+     *        update_date:
+     *          type: string
+     *          format: date-time
+     *        create_user:
+     *          type: string
+     *        update_user:
+     *          type: string
+     *        trieu_chung:
+     *          type: array
+     *          items:
+     *            $ref: "#/components/schemas/thongtin"
+     *        nguyen_nhan:
+     *          type: array
+     *          items:
+     *            $ref: "#/components/schemas/thongtin"
+     *        tong_quan:
+     *          type: array
+     *          items:
+     *            $ref: "#/components/schemas/thongtin"
+     *        cach_dieu_tri:
+     *          type: array
+     *          items:
+     *            $ref: "#/components/schemas/thongtin"
+     *        cach_phong_ngua:
+     *          type: array
+     *          items:
+     *            $ref: "#/components/schemas/thongtin"
+     *        doi_tuong_mac_benh:
+     *          type: array
+     *          items:
+     *            $ref: "#/components/schemas/thongtin"
+     *        bien_phap_chuan_doan:
+     *          type: array
+     *          items:
+     *            $ref: "#/components/schemas/thongtin"
+     *        duong_lay_truyen:
+     *          type: array
+     *          items:
+     *            $ref: "#/components/schemas/thongtin"
+     *        bien_chung:
+     *          type: array
+     *          items:
+     *            $ref: "#/components/schemas/thongtin"
+     *        danh_sach_trieu_chung:
+     *          type: array
+     *          items:
+     *            $ref: "#/components/schemas/thongtin_trieuchung"
+     *        status:
+     *          type: integer
+     *    thongtin:
+     *      type: object
+     *      properties:
+     *        tieu_de:
+     *          type: string
+     *        noi_dung:
+     *          type: string
+     *        do_uu_tien:
+     *          type: integer
+     *        link_web:
+     *          type: string
+     *        id_web:
+     *          type: objectid
+     *        create_date:
+     *          type: string
+     *          format: date-time
+     *        update_date:
+     *          type: string
+     *          format: date-time
+     *        create_user:
+     *          type: objectid
+     *        update_user:
+     *          type: objectid
+     *    thongtin_trieuchung:
+     *      type: object
+     *      properties:
+     *        type:
+     *          type: string
+     *        content:
+     *          type: string
+     *        point:
+     *          type: integer
+     */
+
     var Schema = mongoose.Schema,
         ObjectId = Schema.ObjectId;
 
@@ -116,11 +210,6 @@ module.exports = mongoose => {
         status: Number
     }, { timestamps: true });
 
-    schema.method("toJSON", function () {
-        const { __v, _id, ...object } = this.toObject();
-        object.id = _id;
-        return object;
-    });
 
     const Illness = mongoose.model("benhs", schema);
     return Illness;
