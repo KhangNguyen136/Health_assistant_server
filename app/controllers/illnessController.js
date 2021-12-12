@@ -1,6 +1,6 @@
 const db = require("../models");
 const Illness = db.illness;
-
+const public_func = require("../share/public_func");
 // Create and Save a new illness
 exports.create = (req, res) => {
     // Validate request
@@ -27,20 +27,22 @@ exports.create = (req, res) => {
         });
 };
 
-// Retrieve all illness from the database.
-exports.findAll = (req, res) => {
-    const title = req.query.title;
-    var condition = title ? { title: { $regex: new RegExp(title), $options: "i" } } : {};
 
-    Illness.find(condition)
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while retrieving illnesses."
-            });
+
+
+exports.findAll = async(req, res) => {
+    try {
+        var data = await Illness.find()
+        res.status(200).json({
+            "data": data,
+            "total": data.length,
+            "message": "Successfull",
         });
+
+    } catch (error) {
+        res.status(500).json({ "message": "Server Error" });
+        console.log(error);
+    }
 };
 
 // Find a single illness with an id
@@ -108,20 +110,6 @@ exports.delete = (req, res) => {
         });
 };
 
-// Delete all Illnesss from the database.
-exports.deleteAll = (req, res) => {
-    Illness.deleteMany({})
-        .then(data => {
-            res.send({
-                message: `${data.deletedCount} Illnesss were deleted successfully!`
-            });
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while removing all Illnesss."
-            });
-        });
-};
 
 // Find all published Illnesss
 exports.findAllPublished = (req, res) => {
@@ -136,32 +124,66 @@ exports.findAllPublished = (req, res) => {
         });
 };
 
-exports.searchbyName = async (req, res) => {
-    var name = req.query.name;
-    // console.log(name);
-    // if (name != null) {
-    const data = await Illness.find({ "ten_benh": "Rối loạn tiền đình" });
-    var noidung = data[0].trieu_chung[0].noi_dung;
-    console.log(noidung)
-    // for (var id = 0; id < noidung.length; id++) {
-    //     console.log(noidung[id])
-    // }
-    res.status(200).json({ "data": data });
+exports.searchbyName = async(req, res) => {
+    try {
+        var name = req.query.name;
+        var limits = req.query.limit;
+        var page = req.query.page;
+        if (!page) {
+            page = 1
+        }
+        if (!limits) {
+            res.status(400).json({ "message": " Bad request." });
 
-    // } else {
-    //     res.status(400).send("Name is null! Bad request.");
-    // };
+        } else {
+            var data;
+            if (!name) {
+                data = await Illness
+                    .find({ status: [1, 2] })
+                    .sort({ ten_benh: 'desc' })
+                    .limit(parseInt(limits))
+                    .skip((page - 1) * limits);
+            } else {
+                data = await Illness
+                    .find({ "ten_benh": new RegExp('.*' + name + '.*'), status: [1, 2] })
+                    .sort({ ten_benh: 'desc' })
+                    .limit(parseInt(limits))
+                    .skip((page - 1) * limits);
+            }
+
+            var paging = []
+            length = await Illness.find({ "ten_benh": new RegExp('.*' + name + '.*'), status: [1, 2] })
+            paging = public_func.getPage(page, length.length, limits)
+
+            var out;
+            await paging.then((values) => {
+                out = values;
+            });
+            for (var i = 0; i < out.length; i++) {
+                out[i]["search_key"] = name;
+                out[i]["limit"] = limits;
+            }
+            res.status(200).json({
+                "data": data,
+                "paging": out,
+                "total": length.length,
+                "message": "Successfull",
+            });
+
+        };
+    } catch (error) {
+        res.status(500).json({ "message": "Server Error" });
+        console.log(error);
+    }
+
 
 };
 
 
 
+
 exports.getIllByName = async (illName) => {
-    // try {
-
-    // } catch (error) {
-
-    // }
+ 
     const ill = await Illness.findOne({ "ten_benh": illName });
     return ill
 }
