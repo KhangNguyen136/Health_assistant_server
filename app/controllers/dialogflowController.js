@@ -6,6 +6,7 @@ exports.getMsg = (req, res) => {
     const intent = queryResult.intent.displayName;
     const result = respondResult;
     // console.log(queryResult);
+
     var msg
     switch (intent) {
         case 'tra_cuu':
@@ -45,100 +46,46 @@ async function get_illness_infor(intent, illName) {
     const ill = await IllnessController.getIllByName(illName);
     const result = respondResult;
     var msg = '';
-    var content = [];
+    var content = undefined;
 
     // console.log(ill);
     if (ill == null) {
         msg = 'Xin lỗi chúng tôi không có thông tin của bệnh này'
-        content.push({
-            type: 's',
-            content: 'Xin lỗi chúng tôi không có thông tin của bệnh này'
-        })
+        // content.push({
+        //     type: 's',
+        //     content: 'Xin lỗi chúng tôi không có thông tin của bệnh này'
+        // })
     }
     else {
-        switch (intent) {
-            case 'tong_quan_benh':
-                if (ill.tong_quan.length == 0) {
-                    msg = 'Xin lỗi chúng tôi không có thông tin tổng quan của bệnh ' + illName
-                    content.push({
-                        type: 's',
-                        content: 'Xin lỗi chúng tôi không có thông tin tổng quan của bệnh ' + illName
-                    })
-                }
-                else {
-                    msg = 'Tổng quan bệnh ' + illName
-                    content = ill.tong_quan[0].noi_dung;
-                }
-                break;
-            case 'trieu_chung_benh':
-                if (ill.trieu_chung.length == 0) {
-                    msg = 'Xin lỗi chúng tôi không có thông tin về triệu chứng của bệnh ' + illName
-                    content.push({
-                        type: 's',
-                        content: 'Xin lỗi chúng tôi không có thông tin về triệu chứng của bệnh ' + illName
-                    })
-                }
-                else {
-                    msg = 'Triệu chứng bệnh ' + illName
-                    content = ill.trieu_chung[0].noi_dung
-                }
-                break;
-            case 'nguyen_nhan_benh':
-                if (ill.nguyen_nhan.length == 0) {
-                    msg = 'Xin lỗi chúng tôi không có thông tin về nguyên nhân của bệnh ' + illName
-                    content.push({
-                        type: 's',
-                        content: 'Xin lỗi chúng tôi không có thông tin về nguyên nhân của bệnh ' + illName
-                    })
-                }
-                else {
-                    msg = 'Nguyên nhân bệnh ' + illName
-                    content = ill.nguyen_nhan[0].noi_dung
-                }
-                break;
-            case 'cach_phong_ngua':
-                if (ill.cach_phong_ngua.length == 0) {
-                    msg = 'Xin lỗi chúng tôi không có thông tin về cách phòng ngừa của bệnh ' + illName
-                    content.push({
-                        type: 's',
-                        content: 'Xin lỗi chúng tôi không có thông tin về cách phòng ngừa của bệnh ' + illName
-                    })
-                }
-                else {
-                    msg = 'Cách phòng ngừa bệnh ' + illName
-                    content = ill.cach_phong_ngua[0].noi_dung
-                }
-                break;
-
-            case 'cach_dieu_tri':
-                if (ill.cach_dieu_tri.length == 0) {
-                    msg = 'Xin lỗi chúng tôi không có thông tin về cách điều trị của bệnh ' + illName
-                    content.push({
-                        type: 's',
-                        content: 'Xin lỗi chúng tôi không có thông tin về cách điều trị của bệnh ' + illName
-                    })
-                }
-                else {
-                    msg = 'Cách điều trị bệnh ' + illName
-                    content = ill.cach_dieu_tri[0].noi_dung
-                }
-                break;
-            default:
-                msg = 'Thông tin khác của bệnh ' + illName
-                content.push({
-                    type: 's',
-                    content: 'Thông tin khác của bệnh ' + illName
-                })
-                break;
+        const infor = ill[intent];
+        if (infor.length == 0) {
+            msg = 'Xin lỗi chúng tôi không có thông tin ' + intentDescript[intent].toLowerCase() + ' của bệnh ' + illName
+            // content.push({
+            //     type: 's',
+            //     content: msg
+            // })
+        }
+        else {
+            msg = intentDescript[intent] + ' bệnh ' + illName
+            content = infor[0].noi_dung;
         }
     }
-
     result.fulfillmentMessages[0].text.text = [msg];
     result.fulfillmentMessages[1].payload.content = content;
     console.log(result.fulfillmentMessages);
     return result;
 }
 
+exports.test = async (req, res) => {
+    // console.log(req);
+    const illInfo = await IllnessController.getIllByName('rối loạn tiền đình');
+    console.log(illInfo['nguyen_nhan']);
+    res.send(JSON.stringify(illInfo))
+}
+
+const intentDescript = {
+    'tong_quan': 'Tổng quan',
+}
 
 const respondResult = {
     // fulfillmentText: '',
