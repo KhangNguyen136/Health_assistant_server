@@ -154,10 +154,14 @@ exports.searchbyName = async (req, res) => {
 
 };
 
+
+
 exports.getIllByName = async (illName) => {
+    // try {
+
+    // } catch (error) {
+
+    // }
     const ill = await Illness.findOne({ "ten_benh": illName });
-    // if (data.length == 0)
-    //     return null;
-    // console.log(ill);
     return ill
 }
