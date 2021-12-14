@@ -6,7 +6,7 @@ const illnessController = require("./app/controllers/illnessController");
 const auth = require("./app/middleware/auth");
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require("swagger-jsdoc");
-const { version } = require("../../package.json");
+const { version } = require("./package.json");
 
 var app = express();
 

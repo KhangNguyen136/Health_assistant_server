@@ -210,7 +210,7 @@ module.exports = mongoose => {
         status: Number
     }, { timestamps: true });
 
-
     const Illness = mongoose.model("benhs", schema);
     return Illness;
+
 };
