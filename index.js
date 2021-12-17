@@ -6,7 +6,7 @@ const illnessController = require("./app/controllers/illnessController");
 const auth = require("./app/middleware/auth");
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require("swagger-jsdoc");
-const { version } = require("../../package.json");
+const { version } = require("./package.json");
 
 var app = express();
 
@@ -32,7 +32,7 @@ db.mongoose
 
 app.post("/dialogflow", dialogflowController.getMsg);
 
-
+app.use('/test',dialogflowController.test);
 
 app.use('/api/illness', require('./app/routes/illnessRoutes'));
 
