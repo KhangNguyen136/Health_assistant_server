@@ -150,10 +150,14 @@ exports.searchbyName = async(req, res) => {
                     .limit(parseInt(limits))
                     .skip((page - 1) * limits);
             }
+            // console.log(data)
+            var count = length.length;
+            if (count) {
 
+            }
             var paging = []
             length = await Illness.find({ "ten_benh": new RegExp('.*' + name + '.*'), status: [1, 2] })
-            paging = public_func.getPage(page, length.length, limits)
+            paging = public_func.getPage(page, count, limits)
 
             var out;
             await paging.then((values) => {
@@ -163,10 +167,12 @@ exports.searchbyName = async(req, res) => {
                 out[i]["search_key"] = name;
                 out[i]["limit"] = limits;
             }
+            // data = await public_func.getillinfomation(data)
+            // console.log(data)
             res.status(200).json({
                 "data": data,
                 "paging": out,
-                "total": length.length,
+                // "total": count,
                 "message": "Successfull",
             });
 
@@ -176,7 +182,6 @@ exports.searchbyName = async(req, res) => {
         console.log(error);
     }
 
-
 };
 
 
@@ -185,5 +190,10 @@ exports.searchbyName = async(req, res) => {
 exports.getIllByName = async (illName) => {
  
     const ill = await Illness.findOne({ "ten_benh": illName });
-    return ill
+    var out = await public_func.getillinfomation(ill)
+        // if (data.length == 0)
+        //     return null;
+        // console.log(ill);
+    return out
+
 }
