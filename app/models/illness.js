@@ -1,4 +1,3 @@
-module.exports = mongoose => {
 
     /**
      * @openapi
@@ -209,6 +208,8 @@ module.exports = mongoose => {
         status: Number
     }, { timestamps: true });
 
+
     const Illness = mongoose.model("Benh", schema, 'Benh');
     return Illness;
+
 };
