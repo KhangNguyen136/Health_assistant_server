@@ -184,11 +184,16 @@ exports.searchbyName = async(req, res) => {
 
 };
 
-exports.getIllByName = async(illName) => {
+
+
+
+exports.getIllByName = async (illName) => {
+ 
     const ill = await Illness.findOne({ "ten_benh": illName });
     var out = await public_func.getillinfomation(ill)
         // if (data.length == 0)
         //     return null;
         // console.log(ill);
     return out
+
 }

@@ -1,4 +1,3 @@
-module.exports = mongoose => {
 
     /**
      * @openapi
@@ -95,6 +94,7 @@ module.exports = mongoose => {
      *          type: integer
      */
 
+module.exports = mongoose => {
     var Schema = mongoose.Schema,
         ObjectId = Schema.ObjectId;
 
@@ -200,8 +200,6 @@ module.exports = mongoose => {
             status: Number,
         }],
         danh_sach_trieu_chung: [{
-            trieu_chung: String,
-            thoi_gian: String
         }],
         create_date: Date,
         update_date: Date,
@@ -210,7 +208,8 @@ module.exports = mongoose => {
         status: Number
     }, { timestamps: true });
 
-    const Illness = mongoose.model("benhs", schema);
+
+    const Illness = mongoose.model("Benh", schema, 'Benh');
     return Illness;
 
 };
