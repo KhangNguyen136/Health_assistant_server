@@ -32,7 +32,11 @@ db.mongoose
 
 app.post("/dialogflow", dialogflowController.getMsg);
 
-app.use('/test',dialogflowController.test);
+app.use('/test', dialogflowController.test);
+
+app.use('/home', (req, res, next) => {
+    res.send('Health assistant server');
+})
 
 app.use('/api/illness', require('./app/routes/illnessRoutes'));
 
@@ -72,7 +76,7 @@ var options = {
         },
         security: [{
             bearerAuth: [],
-        }, ],
+        },],
     },
     apis: ["./app/routes/*.js", "./app/models/*.js"],
 }
