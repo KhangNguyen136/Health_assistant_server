@@ -4,16 +4,16 @@ const IllnessController = require('./illnessController');
 exports.getMsg = async (req, res, next) => {
     try {
         const queryResult = req.body.queryResult;
-        // console.log(queryResult);
+        console.log(queryResult);
         const intent = queryResult.intent.displayName;
         var result = undefined;
         switch (intent) {
             case 'xac_nhan':
                 result = await confirm_route(queryResult, res, next);
                 break;
-            case 'phu_nhan':
-                result = await negate_route(queryResult, res, next);
-                break;
+            // case 'phu_nhan':
+            //     result = await negate_route(queryResult, res, next);
+            //     break;
             case 'tra_cuu':
                 result = await search(queryResult, res, next);
                 break;
@@ -41,7 +41,7 @@ async function search(queryResult, res, next) {
         var msg
         msg = 'Tra cứu thông tin khác: ' + queryResult.queryText;
         result.fulfillmentMessages[0].text.text = [msg];
-        result.fulfillmentMessages[1].payload.content = [];
+        result.fulfillmentMessages[1].payload.content = undefined;
         return result;
     } catch (error) {
         next(error);
@@ -51,6 +51,7 @@ async function search(queryResult, res, next) {
 async function illness_info_route(queryResult, res, next) {
     console.log('Illness info route');
     try {
+        // console.log(queryResult);
         const attr = queryResult.intent.displayName;
         const illName = queryResult.parameters.benh;
         const confident = queryResult.intentDetectionConfidence;
@@ -60,7 +61,8 @@ async function illness_info_route(queryResult, res, next) {
         if (confident < 0.65) {
             msg = 'Có phải bạn đang tra cứu thông tin về ' + attrDescript[attr].toLowerCase() + ' của ' + illName.toLowerCase();
             result.fulfillmentMessages[0].text.text = [msg];
-            // context.parameters.isConfirm = true;
+            result.fulfillmentMessages[1].payload.content = undefined;
+            context.parameters.isConfirm = true;
         }
         else {
             result = await get_illness_infor(attr, illName);
@@ -87,8 +89,8 @@ async function change_ill_route(queryResult, res, next) {
         if (confident < 0.65) {
             msg = 'Có phải bạn đang tra cứu thông tin về ' + attrDescript[attr].toLowerCase() + ' của ' + illName.toLowerCase();
             result.fulfillmentMessages[0].text.text = [msg];
-            result.fulfillmentMessages[1].payload.content = [];
-            // context.parameters.isConfirm = true;
+            result.fulfillmentMessages[1].payload.content = undefined;
+            context.parameters.isConfirm = true;
         }
         else {
             result = await get_illness_infor(attr, illName);
@@ -111,13 +113,14 @@ async function change_attr_route(queryResult, res, next) {
 
         var result = respondResult;
         if (confident < 2) {
-            console.log('Flag if');
+            // console.log('Flag if');
             msg = 'Có phải bạn đang tra cứu thông tin về ' + attrDescript[attr].toLowerCase() + ' của ' + illName.toLowerCase();
-            result.fulfillmentMessages[1].payload.content = [];
-            // context.parameters.isConfirm = true;
+            result.fulfillmentMessages[0].text.text = [msg];
+            result.fulfillmentMessages[1].payload.content = undefined;
+            context.parameters.isConfirm = true;
         }
         else {
-            console.log('Flag else');
+            // console.log('Flag else');
             result = await get_illness_infor(attr, illName);
         }
         context.parameters.thuoc_tinh = attr;
@@ -130,21 +133,33 @@ async function change_attr_route(queryResult, res, next) {
 
 async function confirm_route(queryResult, res, next) {
     try {
+        console.log("confirm route")
         const attr = queryResult.outputContexts[0].parameters.thuoc_tinh;
         const illName = queryResult.outputContexts[0].parameters.benh;
         const confident = queryResult.intentDetectionConfidence;
-        // const context = queryResult.outputContexts[0];
-
+        const isConfirm = queryResult.outputContexts[0].parameters.isConfirm;
+        const context = queryResult.outputContexts[0]
         var result = respondResult;
+        if (!isConfirm) {
+            msg = 'Xin cảm ơn bạn! Mình rất vui vì đã giúp ích cho bạn.';
+            result.fulfillmentMessages[0].text.text = [msg];
+            result.fulfillmentMessages[1].payload.content = undefined;
+            return result;
+        }
+
+        // var result = respondResult;
         if (confident < 0.65) {
             return search(queryResult, res, next);
         }
         else {
             result = await get_illness_infor(attr, illName);
+            context.parameters.isConfirm = false;
+            result.outputContexts = [context];
         }
         return result;
 
     } catch (error) {
+        console.log(error);
         next(error);
     }
 }
@@ -158,6 +173,7 @@ async function get_illness_infor(attr, illName) {
 
     // console.log(ill);
     if (ill == null) {
+        msg = 'Xin lỗi chúng tôi không có thông tin của ' + illName.toLowerCase();
     }
     else {
         const infor = ill[attr];
@@ -206,10 +222,10 @@ const respondResult = {
         },
         {
             payload: {
-                content: [],
+                content: undefined,
                 // Your custom fields payload
             }
         }
     ],
-    outputContexts: []
+    // outputContexts: unde
 }
