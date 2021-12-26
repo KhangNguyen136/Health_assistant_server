@@ -151,12 +151,11 @@ exports.searchbyName = async(req, res) => {
                     .skip((page - 1) * limits);
             }
             // console.log(data)
-            var count = length.length;
-            if (count) {
-
-            }
+            
+            
             var paging = []
             length = await Illness.find({ "ten_benh": new RegExp('.*' + name + '.*'), status: [1, 2] })
+            var count = length.length;
             paging = public_func.getPage(page, count, limits)
 
             var out;
@@ -167,7 +166,7 @@ exports.searchbyName = async(req, res) => {
                 out[i]["search_key"] = name;
                 out[i]["limit"] = limits;
             }
-            // data = await public_func.getillinfomation(data)
+            data = await public_func.getillinfomation(data)
             // console.log(data)
             res.status(200).json({
                 "data": data,
