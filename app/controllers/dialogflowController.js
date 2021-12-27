@@ -1,5 +1,6 @@
 // import { getIllByName } from './illnessController';
 const IllnessController = require('./illnessController');
+const acceptConfident = 0.55;
 
 exports.getMsg = async (req, res, next) => {
     try {
@@ -58,7 +59,7 @@ async function illness_info_route(queryResult, res, next) {
         const context = queryResult.outputContexts[0];
 
         var result = respondResult;
-        if (confident < 0.65) {
+        if (confident < acceptConfident) {
             msg = 'Có phải bạn đang tra cứu thông tin về ' + attrDescript[attr].toLowerCase() + ' của ' + illName.toLowerCase();
             result.fulfillmentMessages[0].text.text = [msg];
             result.fulfillmentMessages[1].payload.content = undefined;
@@ -86,7 +87,7 @@ async function change_ill_route(queryResult, res, next) {
         const context = queryResult.outputContexts[0];
 
         var result = respondResult;
-        if (confident < 0.65) {
+        if (confident < acceptConfident) {
             msg = 'Có phải bạn đang tra cứu thông tin về ' + attrDescript[attr].toLowerCase() + ' của ' + illName.toLowerCase();
             result.fulfillmentMessages[0].text.text = [msg];
             result.fulfillmentMessages[1].payload.content = undefined;
@@ -112,7 +113,7 @@ async function change_attr_route(queryResult, res, next) {
         const illName = context.parameters.benh;
 
         var result = respondResult;
-        if (confident < 2) {
+        if (confident < acceptConfident) {
             // console.log('Flag if');
             msg = 'Có phải bạn đang tra cứu thông tin về ' + attrDescript[attr].toLowerCase() + ' của ' + illName.toLowerCase();
             result.fulfillmentMessages[0].text.text = [msg];
@@ -148,7 +149,7 @@ async function confirm_route(queryResult, res, next) {
         }
 
         // var result = respondResult;
-        if (confident < 0.65) {
+        if (confident < acceptConfident) {
             return search(queryResult, res, next);
         }
         else {
@@ -181,7 +182,7 @@ async function get_illness_infor(attr, illName) {
             msg = 'Xin lỗi chúng tôi không có thông tin ' + attrDescript[attr].toLowerCase() + ' của bệnh ' + illName.toLowerCase();
         }
         else {
-            msg = attrDescript[attr] + ' bệnh ' + illName.toLowerCase();
+            msg = attrDescript[attr] + ' của ' + illName.toLowerCase();
             content = infor[0].noi_dung;
         }
     }

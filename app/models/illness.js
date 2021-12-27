@@ -209,7 +209,7 @@ module.exports = mongoose => {
     }, { timestamps: true });
 
 
-    const Illness = mongoose.model("Benh", schema, 'benhs');
+    const Illness = mongoose.model("Benh", schema, 'Benh');
     return Illness;
 
 };
