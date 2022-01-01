@@ -14,6 +14,9 @@ exports.getMsg = async (req, res, next) => {
             case 'xac_nhan':
                 result = await confirm_route(queryResult, res, next);
                 break;
+            case 'phu_nhan':
+                result = await deny_route(queryResult, res, next);
+                break;
             case 'chan_doan_benh':
                 result = await diagnose(queryResult, res, next);
                 break;
@@ -171,6 +174,43 @@ async function change_attr_route(queryResult, res, next) {
         result.outputContexts = [context];
         return result;
     } catch (error) {
+        next(error);
+    }
+}
+
+async function deny_route(queryResult, res, next) {
+    try {
+        console.log("deny route")
+        const attr = queryResult.outputContexts[0].parameters.thuoc_tinh;
+        const illName = queryResult.outputContexts[0].parameters.benh;
+        const confident = queryResult.intentDetectionConfidence;
+        const isConfirm = queryResult.outputContexts[0].parameters.isConfirm;
+        const queryText = queryResult.outputContexts[0].parameters.queryText;
+        const context = queryResult.outputContexts[0];
+        var result = respondResult;
+        result.fulfillmentMessages[1].payload.content = undefined;
+
+        if (!isConfirm) {
+            const msg = 'Xin lỗi bạn nói gì tôi không hiểu...';
+            result.fulfillmentMessages[0].text.text = [msg];
+            return result;
+        }
+
+        // var result = respondResult;
+        if (confident < acceptConfident) {
+            return search(queryResult, res, next);
+        }
+        else {
+            const msg = 'Xin lỗi vì sự bất tiện này, xin vui lòng nhập lại câu hỏi theo cách dễ hiểu hơn!';
+            result.fulfillmentMessages[0].text.text = [msg];
+            context.parameters.isConfirm = false;
+            result.outputContexts = [context];
+            unknownController.save(queryText);
+        }
+        return result;
+
+    } catch (error) {
+        console.log(error);
         next(error);
     }
 }
