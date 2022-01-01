@@ -2,6 +2,7 @@ const express = require('express')
 
 const PORT = process.env.PORT || 8080
 const dialogflowController = require("./app/controllers/dialogflowController");
+
 const illnessController = require("./app/controllers/illnessController");
 const auth = require("./app/middleware/auth");
 const swaggerUi = require('swagger-ui-express');
@@ -32,24 +33,16 @@ db.mongoose
 
 app.post("/dialogflow", dialogflowController.getMsg);
 
-app.use('/test',dialogflowController.test);
+app.use('/test', dialogflowController.test);
 
 app.use('/api/illness', require('./app/routes/illnessRoutes'));
 
-app.use((req, res, next) => {
-    const error = new Error("Not found");
-    error.status = 404;
-    next(error);
-});
+// const textToSpeechController = require('./app/controllers/textToSpeechController');
+// const { Server } = require("socket.io")
+// app.post('/speechConverted', textToSpeechController.getResult);
 
-app.use((error, req, res, next) => {
-    res.status(error.status || 500).send({
-        error: {
-            status: error.status || 500,
-            message: error.message || 'Interal Server Error',
-        }
-    })
-});
+
+
 
 
 
@@ -72,7 +65,7 @@ var options = {
         },
         security: [{
             bearerAuth: [],
-        }, ],
+        },],
     },
     apis: ["./app/routes/*.js", "./app/models/*.js"],
 }
@@ -84,6 +77,21 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get("/docs.json", (req, res) => {
     res.setHeader("Content-Type", "application/json");
     res.send(swaggerSpec);
+});
+
+app.use((req, res, next) => {
+    const error = new Error("Not found");
+    error.status = 404;
+    next(error);
+});
+
+app.use((error, req, res, next) => {
+    res.status(error.status || 500).send({
+        error: {
+            status: error.status || 500,
+            message: error.message || 'Interal Server Error',
+        }
+    })
 });
 
 console.log(`Docs available at http://localhost:${PORT}/api-docs`);

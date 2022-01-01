@@ -30,7 +30,7 @@ exports.create = (req, res) => {
 
 
 
-exports.findAll = async(req, res) => {
+exports.findAll = async (req, res) => {
     try {
         var data = await Illness.find()
         res.status(200).json({
@@ -124,7 +124,7 @@ exports.findAllPublished = (req, res) => {
         });
 };
 
-exports.searchbyName = async(req, res) => {
+exports.searchbyName = async (req, res) => {
     try {
         var name = req.query.name;
         var limits = req.query.limit;
@@ -151,8 +151,8 @@ exports.searchbyName = async(req, res) => {
                     .skip((page - 1) * limits);
             }
             // console.log(data)
-            
-            
+
+
             var paging = []
             length = await Illness.find({ "ten_benh": new RegExp('.*' + name + '.*'), status: [1, 2] })
             var count = length.length;
@@ -183,16 +183,11 @@ exports.searchbyName = async(req, res) => {
 
 };
 
-
-
-
 exports.getIllByName = async (illName) => {
- 
+
     const ill = await Illness.findOne({ "ten_benh": illName });
-    var out = await public_func.getillinfomation(ill)
-        // if (data.length == 0)
-        //     return null;
-        // console.log(ill);
+    // return ill
+    var out = await public_func.getillinfomation([ill]);
     return out
 
 }

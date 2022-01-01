@@ -1,4 +1,4 @@
-exports.getPage = async(page, total_rows, records_per_page) => {
+exports.getPage = async (page, total_rows, records_per_page) => {
     try {
         var paging_arr = [];
         var total_pages = total_rows / records_per_page;
@@ -48,7 +48,8 @@ function get_top_TT(thongtin) {
 }
 
 
-exports.getillinfomation = async(listbenh) => {
+exports.getillinfomation = async (listbenh) => {
+    console.log(listbenh);
     try {
         var outdata = new Array();
         var benh = new Object();
