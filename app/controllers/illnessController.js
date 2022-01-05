@@ -188,6 +188,8 @@ exports.getIllByName = async (illName) => {
     const ill = await Illness.findOne({ "ten_benh": illName });
     // return ill
     var out = await public_func.getillinfomation([ill]);
+    if (out != null)
+        return out[0];
     return out
 
 }
