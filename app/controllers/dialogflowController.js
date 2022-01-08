@@ -244,20 +244,44 @@ async function get_illness_infor(attr, illName, queryText) {
             msg = attrDescript[attr] + ' của ' + illName.toLowerCase();
             content = infor[0].noi_dung;
         }
+        content = content.concat(getSuggest(ill));
     }
     result.fulfillmentMessages[0].text.text = [msg];
+    console.log(content)
     result.fulfillmentMessages[1].payload.content = content;
     // console.log(result.fulfillmentMessages);
     return result;
 }
 
 exports.test = async (req, res) => {
-    // console.log(req);
-    const illInfo = await IllnessController.getIllByName('viêm đại');
-    // console.log(illInfo['nguyen_nhan']);
-    // console.log(illInfo);
-    res.send(JSON.stringify(illInfo));
+    const illInfo = await IllnessController.getIllByName('viêm đại tràng');
+    const suggest = getSuggest(illInfo);
+    res.send(JSON.stringify(suggest));
 }
+
+function getSuggest(ill) {
+    const result = [];
+    attr.forEach(item => {
+        const info = ill[item];
+        if (info != undefined && info.length != 0) {
+            result.push({
+                type: 'link',
+                content: attrDescript[item]
+            })
+        }
+    })
+    const illName = ill.ten_benh;
+    if (result.length != 0) {
+        const suggestTitle = {
+            type: 'suggest',
+            content: `Thông tin liên quan đến ${illName}: `
+        }
+        console.log(result);
+        return [suggestTitle].concat(result);
+    }
+    return [];
+}
+
 
 const attrDescript = {
     'tong_quan': 'Tổng quan',
@@ -270,6 +294,8 @@ const attrDescript = {
     'duong_lay_truyen': 'Đường lây truyền',
     'nguyen_nhan': 'Nguyên nhân',
 }
+
+const attr = ['tong_quan', 'trieu_chung', 'cach_dieu_tri', 'bien_chung', 'bien_phap_chan_doan', 'cach_phong_ngua', 'doi_tuong_mac_benh', 'duong_lay_truyen', 'nguyen_nhan']
 
 const respondResult = {
     // fulfillmentText: '',
