@@ -45,25 +45,9 @@ async function diagnose(queryResult, res, next) {
     try {
         const result = respondResult;
         const list_symptom = queryResult.parameters.trieu_chung;
-        // const list_ill = diagnoseMiddleware(list_symptom);
-        // if (list_ill.length == 0) {
-        //     const msg = 'Xin loi chung toi khon.....'
-        //     result.fulfillmentMessages[0].text.text = [msg];
-        //     result.fulfillmentMessages[1].payload.content = undefined;
-        //     return result
-        // }
-        // const content = [];
-        // list_ill.forEach(item => {
-        //     content.push({
-        //         type: 'suggest',
-        //         content: item,
-        //     })
-        // })
-        var msg = 'Danh sách các triệu chứng: ';
-        list_symptom.forEach(item =>
-            msg += `${item}, `)
-        result.fulfillmentMessages[0].text.text = [msg];
-        result.fulfillmentMessages[1].payload.content = undefined;
+        const list_ill_res = await diagnoseMiddleware.diagnose(list_symptom);
+        result.fulfillmentMessages[0].text.text = [list_ill_res.msg];
+        result.fulfillmentMessages[1].payload.content = list_ill_res.content;
         return result;
     } catch (error) {
         next(error);
@@ -74,19 +58,6 @@ async function search(queryResult, res, next) {
     try {
         const queryText = queryResult.queryText
         const result = respondResult;
-        // var msg
-        // var content
-        // const search_result = search_in_DB(queryText);
-        // if (search_result.length == 0) {
-        //     //unknow
-        //     msg = 'Xin lỗi chúng tôi không có thông tin của ' + illName.toLowerCase();
-        //     content = undefined;
-        //     unknownController.save(queryText);
-        // }
-        // else {
-        //     msg = queryText;
-        //     content = search_result;
-        // }
         result.fulfillmentMessages[0].text.text = ['Tra cứu thông tin khác: ' + queryText];
         result.fulfillmentMessages[1].payload.content = undefined;
         return result;
