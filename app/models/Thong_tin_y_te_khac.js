@@ -53,6 +53,7 @@ module.exports = mongoose => {
     }, { timestamps: true });
 
     schema.index({tieu_de: 'text', 'profile.something': 'text'});
+    
     const Thong_tin_y_te_khac = mongoose.model("Thong_tin_y_te_khac", schema, 'Thong_tin_y_te_khac');
     return Thong_tin_y_te_khac;
 

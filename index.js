@@ -2,6 +2,7 @@ const express = require('express')
 
 const PORT = process.env.PORT || 8080
 const dialogflowController = require("./app/controllers/dialogflowController");
+
 const illnessController = require("./app/controllers/illnessController");
 const auth = require("./app/middleware/auth");
 const swaggerUi = require('swagger-ui-express');
@@ -32,11 +33,18 @@ db.mongoose
 
 app.post("/dialogflow", dialogflowController.getMsg);
 
-app.use('/test',dialogflowController.test);
+app.use('/test', dialogflowController.test);
 
 app.use('/api/illness', require('./app/routes/illnessRoutes'));
 
 app.use('/api/thong_tin_khac', require('./app/routes/thongtinkhacRoutes'));
+
+// const textToSpeechController = require('./app/controllers/textToSpeechController');
+// const { Server } = require("socket.io")
+// app.post('/speechConverted', textToSpeechController.getResult);
+
+
+
 
 
 
@@ -59,7 +67,7 @@ var options = {
         },
         security: [{
             bearerAuth: [],
-        }, ],
+        },],
     },
     apis: ["./app/routes/*.js", "./app/models/*.js"],
 }
@@ -81,6 +89,7 @@ app.use((req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
+    console.log(error)
     res.status(error.status || 500).send({
         error: {
             status: error.status || 500,

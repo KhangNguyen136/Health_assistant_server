@@ -8,16 +8,21 @@ exports.searchbyName = async(req, res) => {
         var name = req.query.name;
 
         var data;
-        if (!name) {
+        if (name) {
             data = await Thong_tin_y_te_khac
-                .find()
+                .find({$text: {$search: name}})
+            
+            res.status(200).json({
+                "data" : data,
+                "value": name,
+                "message": "Successfull"
+            });
         }
-        console.log(data)
-        res.status(200).json({
-            "data" : data,
-            "value": name,
-            "message": "Successfull"
-        });
+        else
+        {
+            res.status(400).json({ "message": "Bad Request" });
+        }
+
     } catch (error) {
         res.status(500).json({ "message": "Server Error" });
         console.log(error);
