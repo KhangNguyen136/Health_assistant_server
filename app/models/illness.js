@@ -66,7 +66,14 @@
      *        tieu_de:
      *          type: string
      *        noi_dung:
-     *          type: string
+     *          type: array
+     *          items:
+     *            type: object
+     *            properties:
+     *              type:
+     *                type: string
+     *              content:
+     *                type: string
      *        do_uu_tien:
      *          type: integer
      *        link_web:

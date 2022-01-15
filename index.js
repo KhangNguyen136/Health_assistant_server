@@ -36,20 +36,7 @@ app.use('/test',dialogflowController.test);
 
 app.use('/api/illness', require('./app/routes/illnessRoutes'));
 
-app.use((req, res, next) => {
-    const error = new Error("Not found");
-    error.status = 404;
-    next(error);
-});
-
-app.use((error, req, res, next) => {
-    res.status(error.status || 500).send({
-        error: {
-            status: error.status || 500,
-            message: error.message || 'Interal Server Error',
-        }
-    })
-});
+app.use('/api/thong_tin_khac', require('./app/routes/thongtinkhacRoutes'));
 
 
 
@@ -84,6 +71,22 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get("/docs.json", (req, res) => {
     res.setHeader("Content-Type", "application/json");
     res.send(swaggerSpec);
+});
+
+
+app.use((req, res, next) => {
+    const error = new Error("Not found");
+    error.status = 404;
+    next(error);
+});
+
+app.use((error, req, res, next) => {
+    res.status(error.status || 500).send({
+        error: {
+            status: error.status || 500,
+            message: error.message || 'Interal Server Error',
+        }
+    })
 });
 
 console.log(`Docs available at http://localhost:${PORT}/api-docs`);
