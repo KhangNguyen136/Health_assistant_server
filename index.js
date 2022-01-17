@@ -37,6 +37,8 @@ app.use('/test', dialogflowController.test);
 
 app.use('/api/illness', require('./app/routes/illnessRoutes'));
 
+app.use('/api/thong_tin_khac', require('./app/routes/thongtinkhacRoutes'));
+
 // const textToSpeechController = require('./app/controllers/textToSpeechController');
 // const { Server } = require("socket.io")
 // app.post('/speechConverted', textToSpeechController.getResult);
@@ -78,6 +80,7 @@ app.get("/docs.json", (req, res) => {
     res.setHeader("Content-Type", "application/json");
     res.send(swaggerSpec);
 });
+
 
 app.use((req, res, next) => {
     const error = new Error("Not found");
