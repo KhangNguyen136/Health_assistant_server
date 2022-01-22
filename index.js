@@ -44,10 +44,6 @@ app.use('/api/thong_tin_khac', require('./app/routes/thongtinkhacRoutes'));
 // app.post('/speechConverted', textToSpeechController.getResult);
 
 
-
-
-
-
 // api documents
 var options = {
     definition: {

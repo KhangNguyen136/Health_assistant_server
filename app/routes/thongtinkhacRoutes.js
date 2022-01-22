@@ -1,4 +1,4 @@
-const thong_tin_y_te_khac = require("../controllers/searchImformationController");
+const thong_tin_y_te_khac = require("../controllers/orderImformationController");
 let express = require('express');
 let router = express.Router();
 const YAML = require('yaml');
@@ -6,7 +6,7 @@ const YAML = require('yaml');
 
 /**
  * @openapi
- * /api/thong_tin_y_te_khac/search:
+ * /api/thong_tin_khac/search:
  *   get:
  *     tags:
  *     - Thong tin y te Khac
@@ -14,7 +14,7 @@ const YAML = require('yaml');
  *     parameters:
  *      - name: name
  *        in: path
- *        description: Tên bệnh
+ *        description: thong tin tiem kiem
  *        required: false
  *     responses:
  *       '200':
