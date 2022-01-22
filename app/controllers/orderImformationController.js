@@ -1,11 +1,10 @@
 const db = require("../models");
-const Thong_tin_y_te_khac = db.Thong_tin_y_te_khac;
+const Thong_tin_y_te_khac = db.orderimfomation;
 const public_func = require("../share/public_func");
-let request = require('request');
 const axios = require('axios');
 
-const link = "http://55ed-8-21-11-211.ngrok.io"
-  
+const link = "http://e9bc-2402-800-63a9-bb85-8819-2f21-6814-fd4.ngrok.io"
+
 exports.searchbyName = async(req, res) => {
     
     try {
@@ -20,7 +19,8 @@ exports.searchbyName = async(req, res) => {
         var data;
         if (name) {
             data = await Thong_tin_y_te_khac
-                .find({$text: {$search: name}});
+                .find({$text: {$search:  name }},{ score: { $meta: "textScore" } })
+                .sort({ score: { $meta: "textScore" } });
             
             if(data.length >0)
             {
@@ -39,7 +39,7 @@ exports.searchbyName = async(req, res) => {
                         noidung2 += " , " + data[i]["tieu_de"]
                     }
 
-                    if(count%70 == 0)
+                    if(count%50 == 0)
                     {
                         url_api = encodeURI(link + `/sosanh?noidung1=${name}&noidung2=${noidung2}`) ;
                         await axios.get(url_api).then(function(response)
@@ -52,28 +52,14 @@ exports.searchbyName = async(req, res) => {
                             
                         });
                         noidung2 = "";
+                        break;
                     }
                     count ++;
 
                 }
-                if(count%70 > 0)
-                {
-                    url_api = encodeURI(link + `/sosanh?noidung1=${name}&noidung2=${noidung2}`) ;
-                    await axios.get(url_api).then(function(response)
-                    {
-                        if(out<response.data["phan_tram"])
-                        {
-                            content =  response.data["content"]
-                            out = response.data["phan_tram"]
-                        }
-                        
-                    });
-                    noidung2 = "";
-                }
-
                 output =  await Thong_tin_y_te_khac.find({"tieu_de": content});
 
-                if(out>0.7)
+                if(out>0.59)
                 {
                     res.status(200).json({
                         "data" : output,
@@ -85,7 +71,6 @@ exports.searchbyName = async(req, res) => {
                 {
                     res.status(200).json({
                         "data" : [],
-                        "value": name,
                         "message": "Successfull"
                     });
                 }
@@ -94,7 +79,6 @@ exports.searchbyName = async(req, res) => {
             {
                 res.status(200).json({
                     "data" : [],
-                    "value": name,
                     "message": "Successfull"
                 });
             }
@@ -112,7 +96,6 @@ exports.searchbyName = async(req, res) => {
 };
 
 exports.searchbyNameDialog = async(req, res) => {
-    
     try {
         var name = req.query.name;
         url_api = encodeURI(link + `/stopword?content=${name}`) ;
@@ -136,7 +119,8 @@ exports.searchbyNameDialog = async(req, res) => {
                     {
                         noidung2 += " , " + data[i]["tieu_de"]
                     }
-                    if(count%70 == 0)
+
+                    if(count%50 == 0)
                     {
                         url_api = encodeURI(link + `/sosanh?noidung1=${name}&noidung2=${noidung2}`) ;
                         await axios.get(url_api).then(function(response)
@@ -146,25 +130,15 @@ exports.searchbyNameDialog = async(req, res) => {
                                 content =  response.data["content"]
                                 out = response.data["phan_tram"]
                             }
+                            
                         });
                         noidung2 = "";
+                        break;
                     }
                     count ++;
+
                 }
-                if(count%70 > 0)
-                {
-                    url_api = encodeURI(link + `/sosanh?noidung1=${name}&noidung2=${noidung2}`) ;
-                    await axios.get(url_api).then(function(response)
-                    {
-                        if(out<response.data["phan_tram"])
-                        {
-                            content =  response.data["content"]
-                            out = response.data["phan_tram"]
-                        }
-                        
-                    });
-                    noidung2 = "";
-                }
+                
                 output =  await Thong_tin_y_te_khac.find({"tieu_de": content});
 
                 if(out>0.7)
