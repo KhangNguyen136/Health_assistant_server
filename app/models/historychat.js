@@ -38,9 +38,9 @@
             ask: String,
             answer: [{}],
             create_date: Date,
-            create_user: ObjectId,
+            create_user: String,
             status: Number
-        }, { timestamps: true });
+        });
     
         schema.index({tieu_de: 'text', 'profile.something': 'text'});
         

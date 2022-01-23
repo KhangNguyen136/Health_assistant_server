@@ -2,8 +2,10 @@ const db = require("../models");
 const Thong_tin_y_te_khac = db.orderimfomation;
 const public_func = require("../share/public_func");
 const axios = require('axios');
+const history = require("../controllers/historychatController");
 
-const link = "http://e9bc-2402-800-63a9-bb85-8819-2f21-6814-fd4.ngrok.io"
+
+const link = "http://7be1-2402-800-63a9-bb85-1198-15bf-20db-f2a2.ngrok.io"
 
 exports.searchbyName = async(req, res) => {
     
@@ -58,7 +60,12 @@ exports.searchbyName = async(req, res) => {
 
                 }
                 output =  await Thong_tin_y_te_khac.find({"tieu_de": content});
-
+                var a = {
+                    "hello":"ssss",
+                    "hhh":111,
+                    
+                }
+                history.create("asd","ban ten gi vay?",a)
                 if(out>0.59)
                 {
                     res.status(200).json({

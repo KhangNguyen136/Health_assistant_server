@@ -213,7 +213,7 @@ module.exports = mongoose => {
         create_user: ObjectId,
         update_user: ObjectId,
         status: Number
-    }, { timestamps: true });
+    });
 
 
     const Illness = mongoose.model("Benh", schema, 'Benh');
