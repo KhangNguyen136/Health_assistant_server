@@ -1,4 +1,4 @@
-const thong_tin_y_te_khac = require("../controllers/orderImformationController");
+const thong_tin_y_te_khac = require("../controllers/otherInfoController");
 let express = require('express');
 let router = express.Router();
 const YAML = require('yaml');

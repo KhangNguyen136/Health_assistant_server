@@ -3,6 +3,7 @@ const { format } = require('express/lib/response');
 const IllnessController = require('./illnessController');
 const diagnoseMiddleware = require('./diagnoseController');
 const unknownController = require('./unknownController');
+const searchOtherInfoController = require('./otherInfoController');
 const acceptConfident = 0.55;
 exports.getMsg = async (req, res, next) => {
     try {
@@ -37,6 +38,7 @@ exports.getMsg = async (req, res, next) => {
         res.send(JSON.stringify(result));
 
     } catch (error) {
+        console.log(error);
         next(error);
     }
 }
@@ -58,10 +60,20 @@ async function search(queryResult, res, next) {
     try {
         const queryText = queryResult.queryText
         const result = respondResult;
-        result.fulfillmentMessages[0].text.text = ['Tra cứu thông tin khác: ' + queryText];
-        result.fulfillmentMessages[1].payload.content = undefined;
+        const searchRes = await searchOtherInfoController.search(queryText);
+        // console.log(searchRes);
+        if (searchRes == null) {
+            result.fulfillmentMessages[0].text.text = ['Xin lỗi hiện tại chúng tôi không có thông tin bạn đang cần tìm!'];
+            result.fulfillmentMessages[1].payload.content = undefined;
+        }
+        else {
+            result.fulfillmentMessages[0].text.text = [searchRes.tieu_de];
+            result.fulfillmentMessages[1].payload.content = [searchRes.noi_dung];
+        }
+        console.log(result);
         return result;
     } catch (error) {
+        console.log(error);
         next(error);
     }
 }

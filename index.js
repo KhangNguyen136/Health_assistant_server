@@ -37,7 +37,7 @@ app.use('/test', dialogflowController.test);
 
 app.use('/api/illness', require('./app/routes/illnessRoutes'));
 
-app.use('/api/thong_tin_khac', require('./app/routes/thongtinkhacRoutes'));
+app.use('/api/thong_tin_khac', require('./app/routes/otherRoutes'));
 
 // const textToSpeechController = require('./app/controllers/textToSpeechController');
 // const { Server } = require("socket.io")
