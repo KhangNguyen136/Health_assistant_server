@@ -59,13 +59,7 @@ exports.searchbyName = async(req, res) => {
                     count ++;
 
                 }
-                output =  await Thong_tin_y_te_khac.find({"tieu_de": content});
-                var a = {
-                    "hello":"ssss",
-                    "hhh":111,
-                    
-                }
-                history.create("asd","ban ten gi vay?",a)
+                output =  await Thong_tin_y_te_khac.findOne({"tieu_de": content});
                 if(out>0.59)
                 {
                     res.status(200).json({
