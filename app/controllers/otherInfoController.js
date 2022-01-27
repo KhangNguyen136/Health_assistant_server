@@ -4,76 +4,6 @@ const public_func = require("../share/public_func");
 const axios = require('axios');
 
 const link = "http://7be1-2402-800-63a9-bb85-1198-15bf-20db-f2a2.ngrok.io"
-
-// exports.searchOtherInfo = async (text) => {
-//     try {
-//         console.log(text);
-//         url_api = encodeURI(link + `/stopword?content=${text}`);
-//         await axios.get(url_api).then(function (response) {
-//             text = response.data["content"];
-//         });
-//         var data;
-//         if (text) {
-//             data = await Thong_tin_y_te_khac
-//                 .find({ $text: { $search: text } }, { score: { $meta: "textScore" } })
-//                 .sort({ score: { $meta: "textScore" } });
-//             if (data.length > 0) {
-//                 var noidung2 = "";
-//                 var count = 1;
-//                 var content;
-//                 var out = 0;
-//                 for (var i = 0; i < data.length; i++) {
-//                     if (count == 1) {
-//                         noidung2 = data[i]["tieu_de"]
-//                     }
-//                     else {
-//                         noidung2 += " , " + data[i]["tieu_de"]
-//                     }
-//                     if (count % 50 == 0) {
-//                         url_api = encodeURI(link + `/sosanh?noidung1=${text}&noidung2=${noidung2}`);
-//                         await axios.get(url_api).then(function (response) {
-//                             if (out < response.data["phan_tram"]) {
-//                                 content = response.data["content"]
-//                                 out = response.data["phan_tram"]
-//                             }
-
-//                         });
-//                         noidung2 = "";
-//                         break;
-//                     }
-//                     count++;
-
-//                 }
-//                 output = await Thong_tin_y_te_khac.find({ "tieu_de": content });
-
-//                 if (out > 0.59) {
-//                     res.status(200).json({
-//                         "data": output,
-//                         "percent": out,
-//                         "message": "Successfull"
-//                     });
-//                 }
-//                 else {
-//                     res.status(200).json({
-//                         "data": [],
-//                         "message": "Successfull"
-//                     });
-//                 }
-//             }
-//             else {
-//                 retun null;''
-//             }
-//         }
-//         else {
-//         }
-
-//     } catch (error) {
-
-//         console.log(error);
-//     }
-
-// };
-
 exports.searchbyName = async (req, res) => {
 
     try {
@@ -153,14 +83,18 @@ exports.searchbyName = async (req, res) => {
 
 };
 
-exports.search = async (text) => {
+exports.searchOtherInfo = async (req, res, next) => {
     try {
-        // var text = req.query.text;
+        var text = req.body.text;
+        console.log(text);
         url_api = encodeURI(link + `/stopword?content=${text}`);
         await axios.get(url_api).then(function (response) { text = response.data["content"]; });
         var data;
         if (text) {
-            data = await Thong_tin_y_te_khac.find({ $text: { $search: text } });
+            data = await Thong_tin_y_te_khac
+                .find({ $text: { $search: text } }, { score: { $meta: "textScore" } })
+                .sort({ score: { $meta: "textScore" } });
+
             if (data.length > 0) {
                 var noidung2 = "";
                 var count = 1;
@@ -187,27 +121,42 @@ exports.search = async (text) => {
                         break;
                     }
                     count++;
-                }
 
+                }
                 output = await Thong_tin_y_te_khac.findOne({ "tieu_de": content });
 
-                if (out > 0.5) {
-                    return output;
+                if (out > 0.55) {
+                    res.status(200).json({
+                        text: output.tieu_de,
+                        data: output.noi_dung,
+                        "percent": out,
+                        "message": "Successfull"
+                    });
                 }
                 else {
-                    return null;
+                    res.status(200).json({
+                        text: "Xin lỗi hiện tại chúng tôi không có thông tin bạn cần.",
+                        data: undefined,
+                        "percent": out,
+                        "message": "Not confident"
+                    });
                 }
             }
             else {
-                return null;
+                res.status(200).json({
+                    text: "Xin lỗi hiện tại chúng tôi không có thông tin bạn cần.",
+                    data: undefined,
+                    "message": "Not found"
+                });
             }
         }
         else {
-            return null;
+            throw new Error()
         }
 
     } catch (error) {
-        return null;
+        console.log(error);
+        next(error);
     }
 
 };

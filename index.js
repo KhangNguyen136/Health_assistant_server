@@ -17,6 +17,7 @@ app.use(express.json())
 
 //connect to db
 const db = require("./app/models");
+const searchOtherInfoController = require('./app/controllers/otherInfoController');
 db.mongoose
     .connect(db.url, {
         useNewUrlParser: true,
@@ -39,6 +40,7 @@ app.use('/api/illness', require('./app/routes/illnessRoutes'));
 
 app.use('/api/thong_tin_khac', require('./app/routes/otherRoutes'));
 
+app.post('/api/searchOtherInfo', searchOtherInfoController.searchOtherInfo)
 // const textToSpeechController = require('./app/controllers/textToSpeechController');
 // const { Server } = require("socket.io")
 // app.post('/speechConverted', textToSpeechController.getResult);

@@ -3,7 +3,6 @@ const { format } = require('express/lib/response');
 const IllnessController = require('./illnessController');
 const diagnoseMiddleware = require('./diagnoseController');
 const unknownController = require('./unknownController');
-const searchOtherInfoController = require('./otherInfoController');
 const acceptConfident = 0.55;
 exports.getMsg = async (req, res, next) => {
     try {
@@ -58,19 +57,9 @@ async function diagnose(queryResult, res, next) {
 
 async function search(queryResult, res, next) {
     try {
-        const queryText = queryResult.queryText
         const result = respondResult;
-        const searchRes = await searchOtherInfoController.search(queryText);
-        // console.log(searchRes);
-        if (searchRes == null) {
-            result.fulfillmentMessages[0].text.text = ['Xin lỗi hiện tại chúng tôi không có thông tin bạn đang cần tìm!'];
-            result.fulfillmentMessages[1].payload.content = undefined;
-        }
-        else {
-            result.fulfillmentMessages[0].text.text = [searchRes.tieu_de];
-            result.fulfillmentMessages[1].payload.content = [searchRes.noi_dung];
-        }
-        console.log(result);
+        result.fulfillmentMessages[0].text.text = ["Search other info"];
+        result.fulfillmentMessages[1].payload.content = undefined;
         return result;
     } catch (error) {
         console.log(error);
