@@ -2,7 +2,7 @@ const db = require("../models");
 const Thong_tin_y_te_khac = db.orderimfomation;
 const public_func = require("../share/public_func");
 const axios = require('axios');
-const history = require("../controllers/historychatController");
+const history = require("./historychatController");
 
 
 const link = "http://7be1-2402-800-63a9-bb85-1198-15bf-20db-f2a2.ngrok.io"
@@ -60,7 +60,16 @@ exports.searchbyName = async(req, res) => {
 
                 }
                 output =  await Thong_tin_y_te_khac.findOne({"tieu_de": content});
-                if(out>0.59)
+                try {
+                    console.log("hihi");
+                    var ouuuu = await history.readhistory("asd",0);
+                    console.log(ouuuu)
+                } catch (error) {
+                    console.log("0");
+                }
+                
+                
+                if(out>0.5)
                 {
                     res.status(200).json({
                         "data" : output,
