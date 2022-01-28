@@ -2,9 +2,6 @@ const express = require('express')
 
 const PORT = process.env.PORT || 8080
 const dialogflowController = require("./app/controllers/dialogflowController");
-
-const illnessController = require("./app/controllers/illnessController");
-const auth = require("./app/middleware/auth");
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require("swagger-jsdoc");
 const { version } = require("./package.json");
@@ -37,6 +34,8 @@ app.post("/dialogflow", dialogflowController.getMsg);
 app.use('/test', dialogflowController.test);
 
 app.use('/api/illness', require('./app/routes/illnessRoutes'));
+
+app.use('/api/historyChat', require('./app/routes/historyChatRoutes'));
 
 app.use('/api/thong_tin_khac', require('./app/routes/otherRoutes'));
 
