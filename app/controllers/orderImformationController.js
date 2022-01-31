@@ -4,10 +4,8 @@ const public_func = require("../share/public_func");
 const axios = require('axios');
 const history = require("./historychatController");
 
-
-const link = "http://7be1-2402-800-63a9-bb85-1198-15bf-20db-f2a2.ngrok.io"
-
 exports.searchbyName = async(req, res) => {
+    const link = await public_func.getlinkAPI();
     
     try {
         var name = req.query.name;
@@ -61,11 +59,10 @@ exports.searchbyName = async(req, res) => {
                 }
                 output =  await Thong_tin_y_te_khac.findOne({"tieu_de": content});
                 try {
-                    console.log("hihi");
+                    
                     var ouuuu = await history.readhistory("asd",0);
-                    console.log(ouuuu)
+                   
                 } catch (error) {
-                    console.log("0");
                 }
                 
                 
@@ -100,13 +97,13 @@ exports.searchbyName = async(req, res) => {
 
     } catch (error) {
         res.status(500).json({ "message": "Server Error" });
-        console.log(error);
     }
 
 };
 
 exports.searchbyNameDialog = async(req, res) => {
     try {
+        const link = await public_func.getlinkAPI();
         var name = req.query.name;
         url_api = encodeURI(link + `/stopword?content=${name}`) ;
         await axios.get(url_api).then(function(response){name = response.data["content"];});

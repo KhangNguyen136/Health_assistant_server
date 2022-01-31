@@ -1,3 +1,7 @@
+const db = require("../models");
+const LinkAPI = db.LinkAPI;
+
+
 exports.getPage = async (page, total_rows, records_per_page) => {
     try {
         var paging_arr = [];
@@ -83,3 +87,9 @@ exports.getillinfomation = async (listbenh) => {
 
 }
 
+exports.getlinkAPI = async () => {
+
+    var data = await LinkAPI.find()
+
+    return data[0]["link"]
+}

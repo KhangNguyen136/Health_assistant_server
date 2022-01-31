@@ -9,4 +9,5 @@ db.url = dbConfig.url;
 db.illness = require("./illness")(mongoose);
 db.orderimfomation = require("./orderimfomation")(mongoose);
 db.Historychat = require("./historychat")(mongoose);
+db.LinkAPI = require("./linkAPI")(mongoose);
 module.exports = db;
