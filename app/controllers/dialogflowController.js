@@ -47,6 +47,8 @@ async function diagnose(queryResult, res, next) {
         const result = respondResult;
         const list_symptom = queryResult.parameters.trieu_chung;
         const list_ill_res = await diagnoseMiddleware.diagnose(list_symptom);
+        if (list_ill_res == null)
+            throw new Error();
         result.fulfillmentMessages[0].text.text = [list_ill_res.msg];
         result.fulfillmentMessages[1].payload.content = list_ill_res.content;
         return result;

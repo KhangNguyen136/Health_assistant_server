@@ -2,11 +2,10 @@ const db = require("../models");
 const Thong_tin_y_te_khac = db.orderimfomation;
 const public_func = require("../share/public_func");
 const axios = require('axios');
-
-const link = "http://7be1-2402-800-63a9-bb85-1198-15bf-20db-f2a2.ngrok.io"
 exports.searchbyName = async (req, res) => {
 
     try {
+        const link = await public_func.getlinkAPI();
         var name = req.query.name;
         console.log(name);
         url_api = encodeURI(link + `/stopword?content=${name}`);
@@ -85,6 +84,8 @@ exports.searchbyName = async (req, res) => {
 
 exports.searchOtherInfo = async (req, res, next) => {
     try {
+        const link = await public_func.getlinkAPI();
+        console.log(link);
         var text = req.body.text;
         console.log(text);
         url_api = encodeURI(link + `/stopword?content=${text}`);
