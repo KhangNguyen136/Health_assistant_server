@@ -239,18 +239,20 @@ async function get_illness_infor(attr, illName, queryText) {
     }
     else {
         const infor = ill[attr];
+        const suggest = getSuggest(ill, attr);
         if (infor.length == 0) {
             msg = 'Xin lỗi chúng tôi không có thông tin ' + attrDescript[attr].toLowerCase() + ' của bệnh ' + illName.toLowerCase();
+            if (suggest.length != 0)
+                content = suggest;
             unknownController.save(queryText);
         }
         else {
             msg = attrDescript[attr] + ' của ' + illName.toLowerCase();
             content = infor[0].noi_dung;
+            content = content.concat(suggest);
         }
-        content = content.concat(getSuggest(ill));
     }
     result.fulfillmentMessages[0].text.text = [msg];
-    console.log(content)
     result.fulfillmentMessages[1].payload.content = content;
     // console.log(result.fulfillmentMessages);
     return result;
@@ -262,11 +264,11 @@ exports.test = async (req, res) => {
     res.send(JSON.stringify(suggest));
 }
 
-function getSuggest(ill) {
+function getSuggest(ill, current_attr) {
     const result = [];
     attr.forEach(item => {
         const info = ill[item];
-        if (info != undefined && info.length != 0) {
+        if (info != undefined && info.length != 0 && item != current_attr) {
             result.push({
                 type: 'link',
                 content: attrDescript[item]
@@ -279,7 +281,6 @@ function getSuggest(ill) {
             type: 'suggest',
             content: `Thông tin liên quan đến ${illName}: `
         }
-        console.log(result);
         return [suggestTitle].concat(result);
     }
     return [];
