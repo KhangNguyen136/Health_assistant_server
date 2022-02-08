@@ -46,3 +46,14 @@ exports.updateInfo = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.getInfo = async (req, res, next) => {
+    try {
+        const userId = req.body.userId;
+        const user = await UserInfo.findOne({ userId });
+        res.status(200).json(user)
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+}

@@ -1,9 +1,11 @@
-const FeedbackController = require('../controllers/userInfoController');
+const UserInfoController = require('../controllers/userInfoController');
 let express = require('express');
 let router = express.Router();
 
-router.post("/register", FeedbackController.register);
+router.post("/register", UserInfoController.register);
 
-router.post("/updateInfo", FeedbackController.updateInfo);
+router.post("/updateInfo", UserInfoController.updateInfo);
+
+router.get('/getInfo', UserInfoController.getInfo);
 
 module.exports = router;
