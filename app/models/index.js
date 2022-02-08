@@ -10,4 +10,5 @@ db.illness = require("./illness")(mongoose);
 db.orderimfomation = require("./otherInfo")(mongoose);
 db.Historychat = require("./historychat")(mongoose);
 db.LinkAPI = require("./linkAPI")(mongoose);
+db.Feedback = require('./feedback')(mongoose);
 module.exports = db;
