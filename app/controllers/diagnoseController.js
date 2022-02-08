@@ -2,7 +2,7 @@
 const axios = require('axios').default;
 const public_func = require("../share/public_func");
 
-exports.diagnose = async (list_symptom) => {
+exports.diagnose = async (noi_dung) => {
     try {
         const link = await public_func.getlinkAPI();
         console.log(link);
@@ -10,11 +10,7 @@ exports.diagnose = async (list_symptom) => {
             msg: '',
             content: undefined
         }
-        var noi_dung = "";
-        console.log(list_symptom);
-        list_symptom.forEach(item => noi_dung += item + ', ')
-        console.log(noi_dung);
-        const res = await axios.post(link + '/knn_get_ill', { noi_dung });
+        const res = await axios.post(link + '/chan_doan', { noi_dung });
         const data = res.data.data;
         console.log(data);
         if (data.length == 0) {

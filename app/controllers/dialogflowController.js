@@ -45,8 +45,7 @@ exports.getMsg = async (req, res, next) => {
 async function diagnose(queryResult, res, next) {
     try {
         const result = respondResult;
-        const list_symptom = queryResult.parameters.trieu_chung;
-        const list_ill_res = await diagnoseMiddleware.diagnose(list_symptom);
+        const list_ill_res = await diagnoseMiddleware.diagnose(queryResult.queryText);
         if (list_ill_res == null)
             throw new Error();
         result.fulfillmentMessages[0].text.text = [list_ill_res.msg];
@@ -292,14 +291,14 @@ const attrDescript = {
     'trieu_chung': 'Triệu chứng',
     'cach_dieu_tri': 'Cách điều trị',
     'bien_chung': 'Biến chứng',
-    'bien_phap_chan_doan': 'Biện pháp chẩn đoán',
+    'bien_phap_chuan_doan': 'Biện pháp chẩn đoán',
     'cach_phong_ngua': 'Cách phòng ngừa',
     'doi_tuong_mac_benh': 'Đối tượng mắc bệnh',
     'duong_lay_truyen': 'Đường lây truyền',
     'nguyen_nhan': 'Nguyên nhân',
 }
 
-const attr = ['tong_quan', 'trieu_chung', 'cach_dieu_tri', 'bien_chung', 'bien_phap_chan_doan', 'cach_phong_ngua', 'doi_tuong_mac_benh', 'duong_lay_truyen', 'nguyen_nhan']
+const attr = ['tong_quan', 'trieu_chung', 'cach_dieu_tri', 'bien_chung', 'bien_phap_chuan_doan', 'cach_phong_ngua', 'doi_tuong_mac_benh', 'duong_lay_truyen', 'nguyen_nhan']
 
 const respondResult = {
     // fulfillmentText: '',
