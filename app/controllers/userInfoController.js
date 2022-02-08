@@ -12,7 +12,7 @@ exports.register = async (req, res, next) => {
             "displayName": data.displayName,
             "phoneNumber": "",
             "fullName": "",
-            "birthday": date_ob.valueOf(),
+            "birthday": 918487140000,
             "status": 1
         });
         userInfo
@@ -39,7 +39,8 @@ exports.updateInfo = async (req, res, next) => {
         })
         console.log(userInfo);
         res.status(200).json({
-            message: "Successful updated"
+            message: "Successful updated",
+            data: userInfo
         })
     } catch (error) {
         console.log(error);

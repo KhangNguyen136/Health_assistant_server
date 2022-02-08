@@ -7,6 +7,8 @@ const swaggerJsdoc = require("swagger-jsdoc");
 const { version } = require("./package.json");
 
 var app = express();
+var cors = require('cors');
+app.use(cors());
 
 app.use(express.urlencoded({ extended: true }));
 

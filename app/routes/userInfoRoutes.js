@@ -6,6 +6,6 @@ router.post("/register", UserInfoController.register);
 
 router.post("/updateInfo", UserInfoController.updateInfo);
 
-router.get('/getInfo', UserInfoController.getInfo);
+router.post('/getInfo', UserInfoController.getInfo);
 
 module.exports = router;
