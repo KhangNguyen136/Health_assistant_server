@@ -27,9 +27,6 @@ exports.create = (req, res) => {
         });
 };
 
-
-
-
 exports.findAll = async (req, res) => {
     try {
         var data = await Illness.find()

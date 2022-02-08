@@ -11,4 +11,6 @@ db.orderimfomation = require("./otherInfo")(mongoose);
 db.Historychat = require("./historychat")(mongoose);
 db.LinkAPI = require("./linkAPI")(mongoose);
 db.Feedback = require('./feedback')(mongoose);
+db.UserInfo = require('./userInfo')(mongoose);
+
 module.exports = db;

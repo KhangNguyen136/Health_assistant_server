@@ -41,6 +41,9 @@ app.use('/api/thong_tin_khac', require('./app/routes/otherRoutes'));
 
 app.use('/api/feedback', require('./app/routes/feedbackRoutes'));
 
+app.use('/api/user', require('./app/routes/userInfoRoutes'));
+
+
 app.post('/api/searchOtherInfo', searchOtherInfoController.searchOtherInfo)
 // const textToSpeechController = require('./app/controllers/textToSpeechController');
 // const { Server } = require("socket.io")
