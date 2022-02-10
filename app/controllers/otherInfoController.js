@@ -1,5 +1,6 @@
 const db = require("../models");
 const Thong_tin_y_te_khac = db.orderimfomation;
+const Infonotfound = db.Infonotfound;
 const public_func = require("../share/public_func");
 const axios = require('axios');
 exports.searchbyName = async (req, res) => {
@@ -49,7 +50,9 @@ exports.searchbyName = async (req, res) => {
                 }
                 output = await Thong_tin_y_te_khac.find({ "tieu_de": content });
 
-                if (out > 0.59) {
+                if (out > 0.55) {
+
+                    luu(req.query.name,output[0].tieu_de,out)
                     res.status(200).json({
                         "data": output,
                         "percent": out,
@@ -57,6 +60,7 @@ exports.searchbyName = async (req, res) => {
                     });
                 }
                 else {
+                    luu(req.query.name,output[0].tieu_de,out)
                     res.status(200).json({
                         "data": [],
                         "percent": out,
@@ -65,6 +69,7 @@ exports.searchbyName = async (req, res) => {
                 }
             }
             else {
+                luu(req.query.name,"",0)
                 res.status(200).json({
                     "data": [],
                     "message": "Not found"
@@ -127,6 +132,7 @@ exports.searchOtherInfo = async (req, res, next) => {
                 output = await Thong_tin_y_te_khac.findOne({ "tieu_de": content });
 
                 if (out > 0.55) {
+                    luu(req.body.text,output.tieu_de,out)
                     res.status(200).json({
                         text: output.tieu_de,
                         data: output.noi_dung,
@@ -135,6 +141,7 @@ exports.searchOtherInfo = async (req, res, next) => {
                     });
                 }
                 else {
+                    luu(req.body.text,output.tieu_de,out)
                     res.status(200).json({
                         text: "Xin lỗi hiện tại chúng tôi không có thông tin bạn cần.",
                         data: undefined,
@@ -144,6 +151,7 @@ exports.searchOtherInfo = async (req, res, next) => {
                 }
             }
             else {
+                luu(req.body.text,"",0)
                 res.status(200).json({
                     text: "Xin lỗi hiện tại chúng tôi không có thông tin bạn cần.",
                     data: undefined,
@@ -161,3 +169,20 @@ exports.searchOtherInfo = async (req, res, next) => {
     }
 
 };
+
+function luu(noi_dung,answer,percent){
+    const d = new Date();
+    let day = d.getDate();
+    const history = new Infonotfound({
+        "create_date": day,
+        "noi_dung": noi_dung,
+        "answer": answer,
+        "percent":percent,
+        "status": 1
+    });
+    history
+        .save(history)
+        .catch(err => {
+            throw err;
+        });
+}
